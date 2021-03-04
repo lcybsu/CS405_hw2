@@ -35,71 +35,71 @@ class Board():
 
     def is_win(self):
         for col in range(4): # vertical
-            winning_sequence = []
+            winning_pattern = []
             for row in range(4):
                 if self.position[row, col] == self.player_2:
-                    winning_sequence.append((row, col))
-                if len(winning_sequence) == 3:
-                    if abs(max(winning_sequence)[0]-min(winning_sequence)[0]) < 3:
+                    winning_pattern.append((row, col))
+                if len(winning_pattern) == 3:
+                    if abs(max(winning_pattern)[0]-min(winning_pattern)[0]) < 3:
                         return True
 
         for row in range(4): # horizontal
-            winning_sequence = []
+            winning_pattern = []
             for col in range(4):
                 if self.position[row, col] == self.player_2:
-                    winning_sequence.append((row, col))
-                if len(winning_sequence) == 3:
-                    if abs(max(winning_sequence)[1] - min(winning_sequence)[1]) < 3:
+                    winning_pattern.append((row, col))
+                if len(winning_pattern) == 3:
+                    if abs(max(winning_pattern)[1] - min(winning_pattern)[1]) < 3:
                         return True
 
-        winning_sequence = [] # diagonal left to right
+        winning_pattern = [] # diagonal left to right
         for row in range(4):
             col = row
             if self.position[row, col] == self.player_2:
-                winning_sequence.append((row, col))
-            if len(winning_sequence) == 3:
-                if abs(max(winning_sequence)[1] - min(winning_sequence)[1]) < 3:
+                winning_pattern.append((row, col))
+            if len(winning_pattern) == 3:
+                if abs(max(winning_pattern)[1] - min(winning_pattern)[1]) < 3:
                     return True
 
-        winning_sequence = []  # [0,3][1,2][2,1][0,3] # diagonal right to left
+        winning_pattern = []  # [0,3][1,2][2,1][0,3] # diagonal right to left
         for row in range(4):
             col = 3 - row
             if self.position[row, col] == self.player_2:
-                winning_sequence.append((row, col))
-            if len(winning_sequence) == 3:
-                if abs(max(winning_sequence)[1] - min(winning_sequence)[1]) < 3:
+                winning_pattern.append((row, col))
+            if len(winning_pattern) == 3:
+                if abs(max(winning_pattern)[1] - min(winning_pattern)[1]) < 3:
                     return True
 
-        winning_sequence = [] # diagonal left to right higher than the center line
+        winning_pattern = [] # diagonal left to right higher than the center line
         for row in range(0,3): #[0,1][1,2][2,3]
             col = row+1
             if self.position[row, col] == self.player_2:
-                winning_sequence.append((row, col))
-            if len(winning_sequence) == 3:
+                winning_pattern.append((row, col))
+            if len(winning_pattern) == 3:
                 return True
 
-        winning_sequence = [] # diagonal left to right lower than the center line
+        winning_pattern = [] # diagonal left to right lower than the center line
         for row in range(1,4): #[1,0][2,1][3,2]
             col = row - 1
             if self.position[row, col] == self.player_2:
-                winning_sequence.append((row, col))
-            if len(winning_sequence) == 3:
+                winning_pattern.append((row, col))
+            if len(winning_pattern) == 3:
                 return True
 
-        winning_sequence = [] # diagonal right to left higher than the center line
+        winning_pattern = [] # diagonal right to left higher than the center line
         for row in range(3):  #[0,2][1,1][2,0]
             col = 2 - row
             if self.position[row, col] == self.player_2:
-                winning_sequence.append((row, col))
-            if len(winning_sequence) == 3:
+                winning_pattern.append((row, col))
+            if len(winning_pattern) == 3:
                 return True
 
-        winning_sequence = [] # diagonal right to left lower than the center line
+        winning_pattern = [] # diagonal right to left lower than the center line
         for row in range(1,4): #[1,3][2,2][3,1]
             col = 4 - row
             if self.position[row, col] == self.player_2:
-                winning_sequence.append((row, col))
-            if len(winning_sequence) == 3:
+                winning_pattern.append((row, col))
+            if len(winning_pattern) == 3:
                 return True
         return False
 
@@ -116,7 +116,7 @@ class Board():
         print('Type "exit" to quit')
         print('Move format [row,column]')
         mcts = MCTS()
-        self = self.make_move(2, 3)
+        self = self.make_move(1, 2)
         print(self)
         while True:
             try:
@@ -181,9 +181,9 @@ class Board():
                 print('  Error:', e)
                 print('Move format [row,column]')
 
-    def game_loop(self):
+    def human_AI(self):
         print('\n  Tic Tac Toe uses Monte Carlo Tree Search \n')
-        print('  Type "exit" to quit the game')
+        print('Type "exit" to quit')
         print('Move format [row,column]')
 
         print(self)
@@ -232,17 +232,6 @@ class Board():
 
 if __name__ == '__main__':
     board = Board()
-    board.game_loop()
+    # board.human_AI()
     # board.AI_vs_AI()
-    # board.play_saved_game()
-
-
-
-
-
-
-
-
-
-
-
+    board.play_saved_game()
