@@ -1,5 +1,6 @@
 from copy import deepcopy
 from mcts import *
+from random import randrange
 
 class Board():
     def __init__(self, board=None):
@@ -12,6 +13,9 @@ class Board():
         # init (reset) board
         self.init_board()
         # create a copy of a previous board state if available
+        self.depth = 0
+        self.isMaxer = True
+        self.count = 0
         if board is not None:
             self.__dict__ = deepcopy(board.__dict__)
     # init (reset) board
@@ -26,6 +30,58 @@ class Board():
         # swap players
         (board.player_1, board.player_2) = (board.player_2, board.player_1)
         return board
+
+    def minimax(self,depth,isMaxer,count):
+
+        if self.is_win():
+            return 10
+        if self.is_draw():
+            return 0
+
+        if depth < 2:
+            if isMaxer:
+                bestScore = -math.inf
+                for col in range(4):
+                    for row in range(4):
+                        if self.position[row, col] == self.empty_square:
+                            self.position[row, col] = self.player_1
+                            score = self.minimax(depth + 1, False, count)
+                            self.position[row, col] = self.player_2
+                            bestScore = max(score, bestScore)
+                return bestScore
+            else:
+                bestScore = math.inf
+                for col in range(4):
+                    for row in range(4):
+                        if self.position[row, col] == self.empty_square:
+                            self.position[row, col] = self.player_2
+                            score = self.minimax(depth + 1, True, count)
+                            self.position[row, col] = self.player_1
+                            bestScore = min(score, bestScore)
+                return bestScore
+        else:
+            return -1
+
+    def make_move_minimax(self):
+        board = Board(self)
+        bestScore = -math.inf
+        bestMove = None
+        for col in range(4):
+            for row in range(4):
+                if board.position[row, col] == self.empty_square:
+                    board.position[row, col] = self.player_1
+                    count = 0
+                    score = board.minimax(0, False, count)
+                    board.position[row, col] = self.player_2
+                    if (score > bestScore):
+                        bestScore = score
+                        bestMove = [row, col]
+                    return bestMove
+
+        # swap players
+        (board.player_1, board.player_2) = (board.player_2, board.player_1)
+        return board
+
     # get whether the game is drawn
     def is_draw(self):
         for row, col in self.position:
@@ -110,6 +166,40 @@ class Board():
                 if self.position[row, col] == self.empty_square:
                     actions.append(self.make_move(row, col))
         return actions
+
+    def mcts_vs_minimax(self):
+        print('\n  Tic Tac Toe MCTS vs minimax\n')
+        print('Type "exit" to quit')
+        print('Move format [row,column]')
+        mcts = MCTS()
+        self = self.make_move(randrange(1,4), randrange(1,4))
+        print(self)
+        while True:
+            try:
+                # best_move1 = self.make_move_minimax()
+                best_move1 = mcts.search(self)
+                try:
+                    self = best_move1.board
+                except:
+                    pass
+                print(self)
+                # best_move = mcts.search(self)
+                best_move = self.make_move_minimax()
+                try:
+                    self = best_move.board
+                except:
+                    pass
+                print(self)
+                (board.player_1, board.player_2) = (board.player_2, board.player_1)
+                if self.is_win():
+                    print('player "%s" won!\n' % self.player_2)
+                    break
+                elif self.is_draw():
+                    print('Drawn!\n')
+                    break
+            except Exception as e:
+                print('  Error:', e)
+                print('Move format [row,column]')
 
     def AI_vs_AI(self):
         print('\n  Tic Tac Toe uses Monte Carlo Tree Search\n')
@@ -232,6 +322,7 @@ class Board():
 
 if __name__ == '__main__':
     board = Board()
-    # board.human_AI()
+    board.human_AI()
     # board.AI_vs_AI()
-    board.play_saved_game()
+    # board.play_saved_game()
+    # board.mcts_vs_minimax()

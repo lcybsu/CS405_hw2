@@ -18,7 +18,7 @@ class TreeNode():
 class MCTS():
     def search(self, initial_state):
         self.root = TreeNode(initial_state, None)
-        for iteration in range(4000):
+        for iteration in range(1000):
             node = self.select(self.root)
             score = self.rollout(node.board)
             self.backpropagate(node, score)
